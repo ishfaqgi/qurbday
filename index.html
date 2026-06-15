@@ -26,16 +26,13 @@
             position: relative; transition: background 2s ease;
             touch-action: manipulation;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         .screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            padding: 20px; transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1), opacity 1s ease; 
+            padding: 20px; transition: transform 0.8s ease, opacity 0.8s ease; 
             z-index: 10;
-            transform: translate3d(0, 0, 0); 
-            -webkit-transform: translate3d(0, 0, 0);
         }
 
         /* --- STABILIZED CSS-ONLY INTRO --- */
@@ -43,7 +40,7 @@
             position: fixed; inset: 0;
             background: #020111; z-index: 10000; display: flex; flex-direction: column; 
             align-items: center; justify-content: center; 
-            pointer-events: none; /* Let clicks pass through if it lags */
+            pointer-events: none; 
             animation: fadeOutIntro 3s forwards;
             animation-delay: 2s;
         }
@@ -56,19 +53,29 @@
         @keyframes fadeOutIntro { to { opacity: 0; visibility: hidden; z-index: -1; display: none; } }
         @keyframes pulseText { 0%, 100% { opacity: 0.7; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1.02); } }
 
-        /* --- CANVASES & AMBIENCE --- */
-        #stardust-canvas, #matrix-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; pointer-events: none; }
-        #matrix-canvas { z-index: 0; opacity: 0; transition: opacity 2s ease; }
+        /* --- FLICKER-FREE BACKGROUND STARS --- */
+        .star-bg {
+            position: absolute; top: 0; left: 0; width: 200%; height: 200%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0));
+            background-size: 200px 200px;
+            animation: scrollStars 60s linear infinite;
+            z-index: 1; pointer-events: none; opacity: 0.5;
+        }
+        @keyframes scrollStars { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
 
         .nebula { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 15% 85%, rgba(157, 0, 255, 0.4) 0%, transparent 40%), radial-gradient(circle at 85% 15%, rgba(0, 212, 255, 0.4) 0%, transparent 40%); opacity: 0; transition: opacity 2s ease; z-index: 1; pointer-events: none; }
         body.party-mode .nebula { opacity: 1; animation: breathe 8s infinite alternate; }
-        @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.1); opacity: 1; } }
+        @keyframes breathe { 0% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        #stars-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; perspective: 800px; transition: opacity 1s; pointer-events: none; }
-        .star-layer { position: absolute; top: 50%; left: 50%; width: 2px; height: 2px; background: transparent; transform-style: preserve-3d; }
+        #stardust-canvas, #matrix-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; pointer-events: none; }
+        #matrix-canvas { z-index: 0; opacity: 0; transition: opacity 2s ease; }
 
         /* --- BUTTONS --- */
-        .action-btn { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.5); padding: 15px 40px; font-size: 1.1rem; font-family: 'Montserrat', sans-serif; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 20; margin-top: 20px; }
+        .action-btn { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.5); padding: 15px 40px; font-size: 1.1rem; font-family: 'Montserrat', sans-serif; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; z-index: 20; margin-top: 20px; }
         .action-btn:active { transform: scale(0.95); background: white; color: #020111; }
         .action-btn.disabled { opacity: 0.5; pointer-events: none; border-color: rgba(255,255,255,0.2); }
 
@@ -87,11 +94,11 @@
         .intro-text p { font-size: 1.1rem; text-align: center; color: #ff0040; margin-bottom: 40px; letter-spacing: 2px; text-transform: uppercase; transition: color 0.5s; cursor: pointer; }
         
         #countdown-container { display: flex; gap: 10px; margin-bottom: 20px; z-index: 20; }
-        .time-box { display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.3); padding: 15px 10px; border-radius: 10px; box-shadow: 0 0 15px rgba(0, 212, 255, 0.1); width: 70px; transition: all 0.5s;}
+        .time-box { display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.3); padding: 15px 10px; border-radius: 10px; box-shadow: 0 0 15px rgba(0, 212, 255, 0.1); width: 70px;}
         .time-box span:first-child { font-family: 'Cinzel', serif; font-size: 2rem; color: #00d4ff; font-weight: bold; text-shadow: 0 0 10px #00d4ff; }
         .label { font-size: 0.7rem; color: #b3b3b3; text-transform: uppercase; margin-top: 5px; letter-spacing: 1px;}
 
-        /* View 2: The Memory Vault (Photo Gallery) */
+        /* View 2: The Memory Vault (BIRTHDAY IMAGES) */
         .gallery-header { text-align: center; margin-bottom: 30px; z-index: 20; pointer-events: none; }
         .gallery-header h2 { font-family: 'Cinzel', serif; font-size: 2.2rem; color: #ffb6c1; text-shadow: 0 0 15px rgba(255, 182, 193, 0.5); }
         .gallery-header p { font-size: 1.1rem; color: #e6e6fa; margin-top: 10px; }
@@ -105,7 +112,6 @@
         }
         .polaroid img { width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
         
-        /* Different rotations and animation delays for a messy, cute look */
         .p1 { transform: rotate(-8deg); animation-delay: 0s; }
         .p2 { transform: rotate(5deg) translateY(-15px); animation-delay: -1.5s; z-index: 2; width: 140px; height: 160px;}
         .p3 { transform: rotate(-3deg); animation-delay: -0.7s; }
@@ -124,28 +130,22 @@
             box-shadow: 0 0 30px #00d4ff; display: flex; justify-content: center; align-items: center; 
             font-family: 'Cinzel', serif; font-size: 2.5rem; color: white; font-weight: bold; 
             cursor: pointer; touch-action: none; 
-            transition: transform 0.05s ease, box-shadow 0.1s ease; 
-            will-change: transform, box-shadow;
+            transition: transform 0.1s ease; /* Simplified for zero flicker */
         }
         
         .shake-1 { animation: shake 0.4s infinite; } .shake-2 { animation: shake 0.2s infinite; } .shake-3 { animation: shake 0.1s infinite; }
-        @keyframes shake { 0% { transform: translate3d(1px, 1px, 0) rotate(0deg); } 25% { transform: translate3d(-2px, -2px, 0) rotate(-1deg); } 50% { transform: translate3d(-3px, 0px, 0) rotate(1deg); } 75% { transform: translate3d(3px, 2px, 0) rotate(0deg); } 100% { transform: translate3d(1px, -1px, 0) rotate(-1deg); } }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 25% { transform: translate(-2px, -2px) rotate(-1deg); } 50% { transform: translate(-3px, 0px) rotate(1deg); } 75% { transform: translate(3px, 2px) rotate(0deg); } 100% { transform: translate(1px, -1px) rotate(-1deg); } }
 
         /* View 4: Scratch-Off Message */
         .content-scroll-box { width: 100%; max-width: 700px; max-height: 80dvh; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; align-items: center; }
-        .content-scroll-box::-webkit-scrollbar { width: 4px; }
-        .content-scroll-box::-webkit-scrollbar-thumb { background: rgba(0, 212, 255, 0.3); border-radius: 10px; }
-        
         .message-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
-        
-        .epic-message-box { background: rgba(10, 15, 40, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 20px; padding: 40px 30px; width: 100%; text-align: center; box-shadow: 0 0 30px rgba(0, 212, 255, 0.1); }
+        .epic-message-box { background: rgba(10, 15, 40, 0.6); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 20px; padding: 40px 30px; width: 100%; text-align: center; box-shadow: 0 0 30px rgba(0, 212, 255, 0.1); }
         .epic-message-box h2 { font-family: 'Cinzel', serif; font-size: 2.2rem; margin-bottom: 20px; background: linear-gradient(90deg, #00d4ff, #9d00ff, #00d4ff); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; animation: gradientText 3s linear infinite; }
         @keyframes gradientText { to { background-position: 200% center; } }
         .epic-message-box p { font-size: 1.05rem; line-height: 1.8; color: #e0e0e0; font-weight: 300; text-align: left; }
-
         #scratch-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 25; touch-action: none; border-radius: 20px; transition: opacity 1.5s ease; cursor: pointer;}
 
-        /* View 5: Candle & Scanner Finale */
+        /* View 5: Finale */
         .finale-text { font-family: 'Cinzel', serif; font-size: 2rem; text-align: center; margin-bottom: 50px; transition: opacity 1s ease; }
         .candle-container { position: relative; width: 60px; height: 150px; display: flex; justify-content: center; align-items: flex-end; transition: opacity 0.5s;}
         .wax { width: 50px; height: 120px; background: linear-gradient(to right, #e5b05c, #fff4d2, #e5b05c); border-radius: 5px 5px 10px 10px; position: relative; box-shadow: inset 0 -10px 20px rgba(0,0,0,0.5); }
@@ -157,7 +157,7 @@
 
         .scanner-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; opacity: 0; pointer-events: none; transition: opacity 1s; z-index: 50; width: 100%;}
         .scanner-container h3 { font-family: 'Cinzel', serif; color: #00d4ff; font-size: 1.5rem; margin-bottom: 30px; letter-spacing: 2px;}
-        .fingerprint-btn { position: relative; width: 120px; height: 120px; margin: 0 auto; border: 3px solid rgba(0, 212, 255, 0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 3rem; background: rgba(0, 212, 255, 0.05); cursor: pointer; touch-action: none; overflow: hidden; box-shadow: 0 0 30px rgba(0, 212, 255, 0.1); transition: all 0.3s; }
+        .fingerprint-btn { position: relative; width: 120px; height: 120px; margin: 0 auto; border: 3px solid rgba(0, 212, 255, 0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 3rem; background: rgba(0, 212, 255, 0.05); cursor: pointer; touch-action: none; overflow: hidden; transition: all 0.3s; }
         .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: #00d4ff; box-shadow: 0 0 15px #00d4ff, 0 0 30px #00d4ff; opacity: 0; transform: translateY(-10px); }
         .fingerprint-btn.scanning { border-color: #00d4ff; box-shadow: 0 0 50px rgba(0, 212, 255, 0.5); background: rgba(0, 212, 255, 0.2); }
         .fingerprint-btn.scanning .scanner-line { opacity: 1; animation: scanLaser 2s linear infinite; }
@@ -198,25 +198,28 @@
 </head>
 <body>
 
+    <!-- STABILIZED CSS-ONLY INTRO -->
     <div id="magical-intro">
         <div id="intro-phrase">Preparing a universe...</div>
     </div>
 
+    <!-- BACKGROUND CANVASES -->
+    <div class="star-bg"></div>
     <canvas id="stardust-canvas"></canvas>
     <canvas id="matrix-canvas"></canvas>
 
     <div class="nebula"></div>
-    <div id="stars-container">
-        <div id="stars1" class="star-layer"></div>
-        <div id="stars2" class="star-layer"></div>
-        <div id="stars3" class="star-layer"></div>
-    </div>
 
-    <audio id="party-music" src="https://archive.org/download/happy-birthday-music/Happy%20Birthday.mp3" preload="auto" loop></audio>
+    <!-- AUDIO FORCED PRELOAD -->
+    <audio id="party-music" preload="auto" loop>
+        <source src="https://archive.org/download/happy-birthday-music/Happy%20Birthday.mp3" type="audio/mpeg">
+    </audio>
 
+    <!-- VIEW 1: ENTRANCE & TIMER -->
     <div id="view-1" class="screen">
         <div class="intro-text">
             <h1 id="main-title">Happy 16th June</h1>
+            <!-- Backdoor: Click text to skip timer for testing -->
             <p id="sub-text" onclick="unlockSystem()" title="Tap to bypass timer">System locked. Awaiting celestial alignment.</p>
         </div>
 
@@ -230,27 +233,32 @@
         <button class="action-btn" id="start-btn" style="display: none;" onclick="triggerSurprise()">Reveal Universe</button>
     </div>
 
+    <!-- VIEW 2: THE MEMORY VAULT (BIRTHDAY PHOTOS) -->
     <div id="view-2" class="screen">
         <div class="gallery-header">
-            <h2>Moments in Time</h2>
-            <p>A universe built on memories.</p>
+            <h2>Happy Birthday</h2>
+            <p>A universe built just for you.</p>
         </div>
         
         <div class="gallery-grid">
+            <!-- Glowing Birthday Cake -->
             <div class="polaroid p1">
-                <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=400&q=80" alt="Memory 1">
+                <img src="https://images.unsplash.com/photo-1558636508-e0db3814bd1d?w=400&q=80" alt="Birthday Cake">
             </div>
+            <!-- Celebration Balloons -->
             <div class="polaroid p2">
-                <img src="https://images.unsplash.com/photo-1522228115018-d838bcce5c3a?w=400&q=80" alt="Memory 2">
+                <img src="https://images.unsplash.com/photo-1530103862676-de8892b12a15?w=400&q=80" alt="Balloons">
             </div>
+            <!-- Birthday Gifts -->
             <div class="polaroid p3">
-                <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&q=80" alt="Memory 3">
+                <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&q=80" alt="Gifts">
             </div>
         </div>
         
         <button class="action-btn" style="z-index: 20; margin-top: 40px;" onclick="goToReactor()">Proceed</button>
     </div>
 
+    <!-- VIEW 3: REACTOR OVERLOAD -->
     <div id="view-3" class="screen">
         <div class="reactor-container">
             <h2>Hyper-Drive Failure</h2>
@@ -264,6 +272,7 @@
         </div>
     </div>
 
+    <!-- VIEW 4: THE EPIC MESSAGE (WITH SCRATCH-OFF) -->
     <div id="view-4" class="screen">
         <div class="content-scroll-box">
             <div class="message-wrapper" id="msg-wrapper">
@@ -274,12 +283,14 @@
                         No matter where life takes us, how much time passes, or what challenges come our way, one thing is absolute: we will be with each other, no matter what. Through every high and every low, you will always have me in your corner, cheering you on and having your back. Just like the stars drifting behind these words, my support and love for you are infinite. I hope this coming year brings you as much joy, success, and brilliance as you bring to my life. Keep shining, Qurat.
                     </p>
                 </div>
+                <!-- The Scratch-Off Overlay -->
                 <canvas id="scratch-canvas"></canvas>
             </div>
             <button class="action-btn disabled" id="btn-to-finale" style="margin-bottom: 40px; transition: opacity 1s;" onclick="goToFinale()">One Last Thing...</button>
         </div>
     </div>
 
+    <!-- VIEW 5: CANDLE & BIOMETRIC FINALE -->
     <div id="view-5" class="screen">
         <h2 class="finale-text" id="wish-text">Make a wish<br>and tap the flame</h2>
         <div class="candle-container" id="candle">
@@ -304,9 +315,9 @@
         const isMobile = window.innerWidth <= 600;
 
         // --- 1. MIDNIGHT VAULT COUNTDOWN TIMER ---
-        // ISHFAQ: I HAVE SET THIS TO 6:05 PM TODAY FOR TESTING.
-        // CHANGE THIS BACK TO "June 16, 2026 00:00:00" AFTER YOUR TEST!
-        const targetDate = new Date("June 15, 2026 18:05:00").getTime();
+        // ISHFAQ: TIMER SET TO 6:15 PM FOR YOUR TESTING
+        // CHANGE TO "June 16, 2026 00:00:00" AFTERWARD!
+        const targetDate = new Date("June 15, 2026 18:15:00").getTime();
         let timerUnlocked = false;
 
         function updateTimer() {
@@ -344,50 +355,29 @@
             confetti({ particleCount: 80, spread: 60, origin: { y: 0.8 }, colors: ['#00d4ff', '#00ff88', '#ffffff'] });
         }
 
-        // --- 2. STARDUST CANVAS (OPTIMIZED) ---
-        const sdCanvas = document.getElementById('stardust-canvas'); const sdCtx = sdCanvas.getContext('2d');
+        // --- 2. STARDUST CANVAS (DISABLED ON MOBILE TO STOP FLICKERING) ---
+        const sdCanvas = document.getElementById('stardust-canvas'); 
+        const sdCtx = sdCanvas.getContext('2d');
         sdCanvas.width = window.innerWidth; sdCanvas.height = window.innerHeight;
         let particlesArray = []; const mouse = { x: null, y: null };
-        const MAX_PARTICLES = isMobile ? 30 : 80;
-
-        window.addEventListener('resize', () => { sdCanvas.width = window.innerWidth; sdCanvas.height = window.innerHeight; });
-        window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; addStardust(); });
-        window.addEventListener('touchmove', (e) => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; addStardust(); }, {passive: true});
         
-        class Stardust {
-            constructor() { this.x = mouse.x; this.y = mouse.y; this.size = Math.random() * 3 + 1; this.speedX = Math.random() * 2 - 1; this.speedY = Math.random() * 2 - 1; this.color = `hsla(${Math.random() * 60 + 200}, 100%, 70%, 0.8)`; }
-            update() { this.x += this.speedX; this.y += this.speedY; if (this.size > 0.1) this.size -= 0.05; }
-            draw() { sdCtx.fillStyle = this.color; sdCtx.beginPath(); sdCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); sdCtx.fill(); }
-        }
-        function addStardust() { if (particlesArray.length < MAX_PARTICLES) { particlesArray.push(new Stardust()); } }
-        function animateStardust() {
-            sdCtx.clearRect(0, 0, sdCanvas.width, sdCanvas.height);
-            for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); particlesArray[i].draw(); if (particlesArray[i].size <= 0.2) { particlesArray.splice(i, 1); i--; } }
-            requestAnimationFrame(animateStardust);
-        }
-        animateStardust();
-
-        // --- 3. BACKGROUND STARS & WARP SPEED (OPTIMIZED) ---
-        function createStars(layerId, count, size, speed) {
-            const layer = document.getElementById(layerId); let shadows = '';
-            for (let i = 0; i < count; i++) { const x = Math.floor(Math.random() * 2000 - 1000); const y = Math.floor(Math.random() * 2000 - 1000); shadows += `${x}px ${y}px #FFF${i === count - 1 ? '' : ','}`; }
-            layer.style.boxShadow = shadows; layer.style.width = size + 'px'; layer.style.height = size + 'px';
-            layer.animate([{ transform: 'translateZ(-500px) rotateZ(0deg)' }, { transform: `translateZ(-500px) rotateZ(360deg)` }], { duration: speed, iterations: Infinity, easing: 'linear' });
-        }
-        
-        createStars('stars1', isMobile ? 80 : 250, 1, 150000); 
-        createStars('stars2', isMobile ? 40 : 100, 2, 120000); 
-        createStars('stars3', isMobile ? 15 : 30, 3, 90000);   
-
-        function triggerWarpSpeed() {
-            const stars = document.getElementById('stars-container');
-            stars.style.transition = 'transform 1.5s cubic-bezier(0.5, 0, 1, 1), opacity 1.5s ease';
-            stars.style.transform = 'translateZ(900px) scale(5)';
-            stars.style.opacity = '0';
-            setTimeout(() => { stars.style.transition = 'none'; stars.style.transform = 'translateZ(0) scale(1)'; }, 2000);
+        if (!isMobile) {
+            window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; addStardust(); });
+            class Stardust {
+                constructor() { this.x = mouse.x; this.y = mouse.y; this.size = Math.random() * 3 + 1; this.speedX = Math.random() * 2 - 1; this.speedY = Math.random() * 2 - 1; this.color = `hsla(${Math.random() * 60 + 200}, 100%, 70%, 0.8)`; }
+                update() { this.x += this.speedX; this.y += this.speedY; if (this.size > 0.1) this.size -= 0.05; }
+                draw() { sdCtx.fillStyle = this.color; sdCtx.beginPath(); sdCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); sdCtx.fill(); }
+            }
+            function addStardust() { if (particlesArray.length < 50) { particlesArray.push(new Stardust()); } }
+            function animateStardust() {
+                sdCtx.clearRect(0, 0, sdCanvas.width, sdCanvas.height);
+                for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); particlesArray[i].draw(); if (particlesArray[i].size <= 0.2) { particlesArray.splice(i, 1); i--; } }
+                requestAnimationFrame(animateStardust);
+            }
+            animateStardust();
         }
 
-        // --- 4. THE MATRIX FINALE RAIN EFFECT ---
+        // --- 3. THE MATRIX FINALE RAIN EFFECT ---
         const mCanvas = document.getElementById('matrix-canvas'); const mCtx = mCanvas.getContext('2d');
         mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
         const matrixChars = "QURAT SISTER HAPPY BIRTHDAY ISHFAQ LOVE".split(""); const fontSize = isMobile ? 12 : 16; const columns = mCanvas.width / fontSize; const drops = [];
@@ -404,7 +394,7 @@
         }
         let matrixInterval;
 
-        // --- 5. REACTOR OVERLOAD MINI-GAME (ANTI-FLICKER) ---
+        // --- 4. REACTOR OVERLOAD MINI-GAME (ANTI-FLICKER SCALING) ---
         let reactorEnergy = 0; let reactorDecayInterval; let isReactorActive = false;
 
         function startReactor() {
@@ -419,7 +409,7 @@
         function chargeReactor(e) {
             e.preventDefault(); 
             if(!isReactorActive) return;
-            reactorEnergy += 10; // Slightly easier to charge on mobile
+            reactorEnergy += 10; 
             
             if(reactorEnergy >= 100) {
                 reactorEnergy = 100; isReactorActive = false; clearInterval(reactorDecayInterval);
@@ -430,7 +420,6 @@
                 confetti({ startVelocity: isMobile ? 60 : 100, spread: 360, ticks: 200, zIndex: 1000, particleCount: isMobile ? 100 : 200, origin: { x: 0.5, y: 0.5 }, colors: ['#ffffff', '#00d4ff', '#ff3366'] });
 
                 document.body.style.background = "#fff";
-                triggerWarpSpeed();
 
                 setTimeout(() => { document.body.style.background = "#020111"; }, 1000); 
                 setTimeout(() => { goToMessage(); }, 3000); 
@@ -444,13 +433,12 @@
             const core = document.getElementById('reactor-core');
             const view3 = document.getElementById('view-3');
 
-            // GPU Accelerated Scaling
+            // Pure scaling - no laggy width/height recalculations
             let scaleAmount = 1 + (reactorEnergy / 100) * (isMobile ? 0.3 : 0.6);
             let hue = 190 - (reactorEnergy * 1.9); 
             
             core.style.background = `radial-gradient(circle at 30% 30%, #ffffff, hsl(${hue}, 100%, 50%), #000000)`;
-            core.style.boxShadow = `0 0 ${20 + (reactorEnergy*0.5)}px hsl(${hue}, 100%, 50%)`;
-            core.style.transform = `scale(${scaleAmount})`; // Prevents layout recalculation flicker
+            core.style.transform = `scale(${scaleAmount})`;
 
             view3.className = "screen slide-in-right"; 
             if(reactorEnergy > 30 && reactorEnergy <= 60) view3.classList.add("shake-1");
@@ -458,7 +446,7 @@
             else if(reactorEnergy > 90) view3.classList.add("shake-3");
         }
 
-        // --- 6. SCRATCH-OFF DECRYPTION LOGIC (OPTIMIZED) ---
+        // --- 5. SCRATCH-OFF DECRYPTION LOGIC ---
         let scratchCanvas, sCtx;
         let isScratching = false;
         let scratchCheckCounter = 0;
@@ -505,9 +493,8 @@
             
             let x = clientX - rect.left; let y = clientY - rect.top;
 
-            sCtx.beginPath(); sCtx.arc(x, y, 40, 0, Math.PI * 2); sCtx.fill(); // Bigger brush for mobile
+            sCtx.beginPath(); sCtx.arc(x, y, 40, 0, Math.PI * 2); sCtx.fill(); 
 
-            // Throttled pixel checking to kill lag on mobile
             scratchCheckCounter++;
             if(scratchCheckCounter % 5 === 0) checkScratchPercentage();
         }
@@ -517,7 +504,7 @@
         let isRevealed = false;
         function checkScratchPercentage() {
             if(isRevealed) return;
-            const stride = isMobile ? 150 : 50; // Massively reduced pixel check on mobile
+            const stride = isMobile ? 150 : 50; 
             const pixels = sCtx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height).data;
             let transparentCount = 0; let totalChecked = 0;
 
@@ -526,7 +513,7 @@
                 totalChecked++;
             }
 
-            if (transparentCount / totalChecked > 0.35) { // Needs slightly less scratching to reveal
+            if (transparentCount / totalChecked > 0.35) { 
                 isRevealed = true; scratchCanvas.style.opacity = '0';
                 setTimeout(() => {
                     scratchCanvas.style.display = 'none';
@@ -535,10 +522,16 @@
             }
         }
 
-        // --- 7. NAVIGATION LOGIC ---
+        // --- 6. NAVIGATION LOGIC & AUDIO UNLOCK ---
         function triggerSurprise() {
+            // FORCES AUDIO TO UNLOCK AND PLAY
             const music = document.getElementById('party-music'); 
-            music.play().catch(e => console.log("Audio blocked by browser auto-play policy"));
+            music.load(); // Force preload
+            music.play().then(() => {
+                console.log("Audio playing successfully.");
+            }).catch(e => {
+                console.log("Audio blocked by browser, user must tap again.", e);
+            });
             
             document.getElementById('view-1').classList.add('slide-out'); 
             document.getElementById('view-2').classList.add('slide-in'); 
@@ -551,14 +544,14 @@
         }
         function goToFinale() { document.getElementById('view-4').classList.remove('slide-in-right'); document.getElementById('view-4').classList.add('slide-left'); document.getElementById('view-5').classList.add('slide-in-right'); }
 
-        // --- 8. CANDLE TO SCANNER FINALE ---
+        // --- 7. CANDLE TO SCANNER FINALE ---
         function blowOutCandle() {
             const flame = document.querySelector('.flame'); const wishText = document.getElementById('wish-text'); const candle = document.getElementById('candle');
             flame.style.opacity = '0'; flame.style.transform = 'scale(0) translateY(-20px)'; wishText.style.opacity = '0'; candle.style.opacity = '0';
             setTimeout(() => { candle.style.display = 'none'; wishText.style.display = 'none'; const scanner = document.getElementById('scanner'); scanner.style.pointerEvents = 'auto'; scanner.style.opacity = '1'; }, 800);
         }
 
-        // --- 9. BIOMETRIC SCANNER LOGIC ---
+        // --- 8. BIOMETRIC SCANNER LOGIC ---
         const fpBtn = document.getElementById('fp-btn'); const scanText = document.getElementById('scan-text'); let holdTimer; let isScanning = false;
         function startScan(e) {
             e.preventDefault(); if(isScanning) return; isScanning = true; fpBtn.classList.add('scanning'); scanText.innerText = "Scanning identity..."; scanText.style.color = "#00d4ff";
@@ -567,11 +560,12 @@
         function stopScan(e) { e.preventDefault(); if(!isScanning) return; isScanning = false; fpBtn.classList.remove('scanning'); clearTimeout(holdTimer); scanText.innerText = "Scan incomplete. Keep holding."; scanText.style.color = "#ff0040"; }
         fpBtn.addEventListener('mousedown', startScan); fpBtn.addEventListener('touchstart', startScan); fpBtn.addEventListener('mouseup', stopScan); fpBtn.addEventListener('touchend', stopScan); fpBtn.addEventListener('mouseleave', stopScan);
 
-        // --- 10. ULTIMATE MATRIX FINALE ---
+        // --- 9. ULTIMATE MATRIX FINALE ---
         function triggerUltimateFinale() {
             fpBtn.removeEventListener('mousedown', startScan); fpBtn.removeEventListener('touchstart', startScan); scanText.innerText = "ACCESS GRANTED. SISTER CONFIRMED."; scanText.style.color = "#00ff88"; fpBtn.style.borderColor = "#00ff88"; fpBtn.classList.remove('scanning');
             setTimeout(() => {
-                document.getElementById('scanner').style.opacity = '0'; document.getElementById('stars-container').style.opacity = '0';
+                document.getElementById('scanner').style.opacity = '0'; 
+                document.querySelector('.star-bg').style.opacity = '0';
                 document.getElementById('matrix-canvas').style.opacity = '1'; matrixInterval = setInterval(drawMatrix, 50);
                 fireInsaneConfetti(); setTimeout(() => { document.getElementById('final-message').style.opacity = '1'; }, 1000);
             }, 1500);
