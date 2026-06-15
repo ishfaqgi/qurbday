@@ -25,19 +25,18 @@
             height: 100dvh; width: 100vw; overflow: hidden; 
             position: relative; transition: background 2s ease;
             touch-action: manipulation;
-            /* Anti-Flicker Font Rendering */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
         }
 
-        /* --- HARDWARE ACCELERATION LOCK (PREVENTS FLICKER) --- */
-        .screen, .intro-text h1, .epic-message-box, .reactor-container, h2, p {
-            transform: translateZ(0);
-            -webkit-transform: translateZ(0);
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            perspective: 1000px;
+        /* Forces mobile browsers to use Hardware Acceleration for smoother rendering */
+        .screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            padding: 20px; transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1), opacity 1s ease; 
+            z-index: 10;
+            transform: translate3d(0, 0, 0); 
+            -webkit-transform: translate3d(0, 0, 0);
         }
 
         /* --- MAGICAL ETHEREAL INTRO --- */
@@ -64,11 +63,8 @@
         #stars-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; perspective: 800px; transition: opacity 1s; pointer-events: none; }
         .star-layer { position: absolute; top: 50%; left: 50%; width: 2px; height: 2px; background: transparent; transform-style: preserve-3d; }
 
-        /* --- SCREEN MANAGEMENT --- */
-        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1), opacity 1s ease; z-index: 10; }
-
         /* --- BUTTONS --- */
-        .action-btn { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.5); padding: 15px 40px; font-size: 1.1rem; font-family: 'Montserrat', sans-serif; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; backdrop-filter: blur(5px); z-index: 20; margin-top: 20px; }
+        .action-btn { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.5); padding: 15px 40px; font-size: 1.1rem; font-family: 'Montserrat', sans-serif; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 20; margin-top: 20px; }
         .action-btn:active { transform: scale(0.95); background: white; color: #020111; }
         .action-btn.disabled { opacity: 0.5; pointer-events: none; border-color: rgba(255,255,255,0.2); }
 
@@ -91,20 +87,29 @@
         .time-box span:first-child { font-family: 'Cinzel', serif; font-size: 2rem; color: #00d4ff; font-weight: bold; text-shadow: 0 0 10px #00d4ff; }
         .label { font-size: 0.7rem; color: #b3b3b3; text-transform: uppercase; margin-top: 5px; letter-spacing: 1px;}
 
-        /* View 2: Ethereal Bloom (New Girly Interaction) */
+        /* Easter Egg */
+        #secret-trigger { position: absolute; top: 0; right: 0; width: 100px; height: 100px; z-index: 100; }
+        #secret-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: rgba(0, 255, 136, 0.1); border: 2px solid #00ff88; padding: 30px; border-radius: 15px; text-align: center; z-index: 2000; backdrop-filter: blur(20px); transition: transform 0.3s; box-shadow: 0 0 50px rgba(0, 255, 136, 0.3); color: #00ff88; width: 85%; max-width: 400px; }
+        #secret-modal h3 { font-family: 'Cinzel', serif; margin-bottom: 15px; font-size: 1.5rem; color: #fff;}
+
+        /* View 2: Ethereal Bloom */
         .bloom-header { text-align: center; margin-bottom: 40px; z-index: 20; pointer-events: none; }
         .bloom-header h2 { font-family: 'Cinzel', serif; font-size: 2.2rem; color: #ffb6c1; text-shadow: 0 0 15px rgba(255, 182, 193, 0.5); }
         .bloom-header p { font-size: 1.1rem; color: #e6e6fa; margin-top: 10px; }
         
+        .bloom-wrapper {
+            animation: gentleFloat 4s ease-in-out infinite; z-index: 20;
+        }
         .ethereal-core {
             width: 100px; height: 100px; border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #ffffff, #ffb6c1, #da70d6);
             box-shadow: 0 0 40px rgba(255, 182, 193, 0.8), inset 0 0 20px #fff;
             display: flex; justify-content: center; align-items: center;
-            cursor: pointer; touch-action: none; transition: transform 0.1s, box-shadow 0.1s;
-            animation: gentleFloat 4s ease-in-out infinite; z-index: 20;
+            cursor: pointer; touch-action: none; 
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            will-change: transform, box-shadow;
         }
-        @keyframes gentleFloat { 0% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-15px) scale(1.05); } 100% { transform: translateY(0px) scale(1); } }
+        @keyframes gentleFloat { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
         
         .bloom-status { margin-top: 40px; font-size: 1.2rem; font-weight: bold; color: #ffb6c1; z-index: 20; text-transform: uppercase; letter-spacing: 2px;}
 
@@ -112,10 +117,23 @@
         .reactor-container { text-align: center; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; }
         .reactor-container h2 { font-family: 'Cinzel', serif; font-size: 2.2rem; color: #ff3366; margin-bottom: 10px; text-shadow: 0 0 15px rgba(255, 51, 102, 0.5); }
         .reactor-container p { font-size: 1.1rem; color: #ccc; margin-bottom: 40px; max-width: 300px; line-height: 1.5;}
-        .reactor-core { width: 150px; height: 150px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #ffffff, #00d4ff, #000055); box-shadow: 0 0 30px #00d4ff; display: flex; justify-content: center; align-items: center; font-family: 'Cinzel', serif; font-size: 2.5rem; color: white; font-weight: bold; cursor: pointer; touch-action: none; transition: transform 0.05s, width 0.1s, height 0.1s; }
-        .reactor-core:active { transform: scale(0.9); }
+        
+        .reactor-wrapper {
+            display: flex; justify-content: center; align-items: center;
+            width: 200px; height: 200px;
+        }
+        .reactor-core { 
+            width: 150px; height: 150px; border-radius: 50%; 
+            background: radial-gradient(circle at 30% 30%, #ffffff, #00d4ff, #000055); 
+            box-shadow: 0 0 30px #00d4ff; display: flex; justify-content: center; align-items: center; 
+            font-family: 'Cinzel', serif; font-size: 2.5rem; color: white; font-weight: bold; 
+            cursor: pointer; touch-action: none; 
+            transition: transform 0.05s ease, box-shadow 0.1s ease; 
+            will-change: transform, box-shadow;
+        }
+        
         .shake-1 { animation: shake 0.4s infinite; } .shake-2 { animation: shake 0.2s infinite; } .shake-3 { animation: shake 0.1s infinite; }
-        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 25% { transform: translate(-2px, -2px) rotate(-1deg); } 50% { transform: translate(-3px, 0px) rotate(1deg); } 75% { transform: translate(3px, 2px) rotate(0deg); } 100% { transform: translate(1px, -1px) rotate(-1deg); } }
+        @keyframes shake { 0% { transform: translate3d(1px, 1px, 0) rotate(0deg); } 25% { transform: translate3d(-2px, -2px, 0) rotate(-1deg); } 50% { transform: translate3d(-3px, 0px, 0) rotate(1deg); } 75% { transform: translate3d(3px, 2px, 0) rotate(0deg); } 100% { transform: translate3d(1px, -1px, 0) rotate(-1deg); } }
 
         /* View 4: Scratch-Off Message */
         .content-scroll-box { width: 100%; max-width: 700px; max-height: 80dvh; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; align-items: center; }
@@ -124,7 +142,7 @@
         
         .message-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
         
-        .epic-message-box { background: rgba(10, 15, 40, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 20px; padding: 40px 30px; width: 100%; text-align: center; box-shadow: 0 0 30px rgba(0, 212, 255, 0.1); }
+        .epic-message-box { background: rgba(10, 15, 40, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 20px; padding: 40px 30px; width: 100%; text-align: center; box-shadow: 0 0 30px rgba(0, 212, 255, 0.1); }
         .epic-message-box h2 { font-family: 'Cinzel', serif; font-size: 2.2rem; margin-bottom: 20px; background: linear-gradient(90deg, #00d4ff, #9d00ff, #00d4ff); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; animation: gradientText 3s linear infinite; }
         @keyframes gradientText { to { background-position: 200% center; } }
         .epic-message-box p { font-size: 1.05rem; line-height: 1.8; color: #e0e0e0; font-weight: 300; text-align: left; }
@@ -164,11 +182,11 @@
             .time-box span:first-child { font-size: 1.5rem; }
             
             .bloom-header h2 { font-size: 1.8rem; }
-            .ethereal-core { width: 90px; height: 90px; }
+            .ethereal-core { width: 80px; height: 80px; }
             
             .reactor-container h2 { font-size: 1.8rem; }
             .reactor-container p { font-size: 0.9rem; }
-            .reactor-core { width: 120px; height: 120px; font-size: 2rem; }
+            .reactor-core { width: 120px; height: 120px; font-size: 1.8rem; }
 
             .epic-message-box { padding: 25px 15px; }
             .epic-message-box h2 { font-size: 1.6rem; margin-bottom: 15px;}
@@ -197,7 +215,7 @@
         <div id="stars3" class="star-layer"></div>
     </div>
 
-    <audio id="party-music" src="https://archive.org/download/happy-birthday-music/Happy%20Birthday.mp3" preload="auto" loop></audio>
+    <audio id="party-music" src="music.mp3" preload="auto" loop></audio>
 
     <div id="view-1" class="screen">
         <div class="intro-text">
@@ -221,8 +239,10 @@
             <p>Press and hold the crystal to infuse it with magic.</p>
         </div>
         
-        <div class="ethereal-core" id="magic-core" onpointerdown="startBloom(event)" onpointerup="stopBloom(event)" onpointerleave="stopBloom(event)">
-            </div>
+        <div class="bloom-wrapper" id="bloom-wrap">
+            <div class="ethereal-core" id="magic-core" onpointerdown="startBloom(event)" onpointerup="stopBloom(event)" onpointerleave="stopBloom(event)" onpointercancel="stopBloom(event)">
+                </div>
+        </div>
         
         <div class="bloom-status" id="bloom-status">Infusing: 0%</div>
         <button class="action-btn disabled" id="btn-to-reactor" style="z-index: 20; opacity: 0; pointer-events: none;" onclick="goToReactor()">Proceed</button>
@@ -233,8 +253,10 @@
             <h2>Hyper-Drive Failure</h2>
             <p>Tap the core rapidly to manually charge it to 100% before the energy decays!</p>
             
-            <div class="reactor-core" id="reactor-core" onpointerdown="chargeReactor(event)">
-                <span id="reactor-text">0%</span>
+            <div class="reactor-wrapper">
+                <div class="reactor-core" id="reactor-core" onpointerdown="chargeReactor(event)">
+                    <span id="reactor-text">0%</span>
+                </div>
             </div>
         </div>
     </div>
@@ -306,9 +328,8 @@
         window.onload = runMagicalIntro;
 
         // --- 1. MIDNIGHT VAULT COUNTDOWN TIMER ---
-        // ISHFAQ: I HAVE SET THIS TO 5:15 PM TODAY FOR TESTING.
-        // CHANGE THIS BACK TO "June 16, 2026 00:00:00" AFTER YOUR TEST!
-        const targetDate = new Date("June 15, 2026 17:15:00").getTime();
+        // ISHFAQ: I HAVE SET THIS TO EXACTLY MIDNIGHT ON JUNE 16, 2026.
+        const targetDate = new Date("June 16, 2026 00:00:00").getTime();
         let timerUnlocked = false;
 
         function updateTimer() {
@@ -406,7 +427,7 @@
         }
         let matrixInterval;
 
-        // --- 5. THE ETHEREAL BLOOM MINI-GAME ---
+        // --- 5. THE ETHEREAL BLOOM MINI-GAME (ANTI-FLICKER) ---
         let bloomEnergy = 0;
         let bloomInterval;
         let isBlooming = false;
@@ -416,7 +437,7 @@
             e.preventDefault();
             if(isFullyBloomed) return;
             isBlooming = true;
-            document.getElementById('magic-core').style.animation = 'none'; // Stop float
+            document.getElementById('bloom-wrap').style.animation = 'none'; 
             
             bloomInterval = setInterval(() => {
                 if(bloomEnergy < 100) {
@@ -437,7 +458,6 @@
             isBlooming = false;
             clearInterval(bloomInterval);
             
-            // Deflate if she lets go early
             bloomInterval = setInterval(() => {
                 if(bloomEnergy > 0 && !isBlooming) {
                     bloomEnergy -= 3;
@@ -446,7 +466,7 @@
                     clearInterval(bloomInterval);
                     if(bloomEnergy <= 0) {
                         bloomEnergy = 0;
-                        document.getElementById('magic-core').style.animation = 'gentleFloat 4s ease-in-out infinite';
+                        document.getElementById('bloom-wrap').style.animation = 'gentleFloat 4s ease-in-out infinite';
                     }
                 }
             }, 30);
@@ -459,13 +479,10 @@
             
             status.innerText = `Infusing: ${Math.floor(bloomEnergy)}%`;
             
-            // Grows massively and glows brighter as it hits 100
-            let baseSize = isMobile ? 90 : 100;
-            let size = baseSize + (bloomEnergy * 1.5);
+            let scaleAmount = 1 + (bloomEnergy / 100) * 1.5;
             let glow = 40 + (bloomEnergy * 1.5);
             
-            core.style.width = size + "px";
-            core.style.height = size + "px";
+            core.style.transform = `scale(${scaleAmount})`;
             core.style.boxShadow = `0 0 ${glow}px rgba(255, 182, 193, 0.8), inset 0 0 ${20 + (bloomEnergy*0.5)}px #fff`;
         }
 
@@ -487,7 +504,7 @@
             setTimeout(() => { core.style.transform = "scale(0)"; core.style.opacity = "0"; }, 500);
         }
 
-        // --- 6. REACTOR OVERLOAD MINI-GAME ---
+        // --- 6. REACTOR OVERLOAD MINI-GAME (ANTI-FLICKER) ---
         let reactorEnergy = 0; let reactorDecayInterval; let isReactorActive = false;
 
         function startReactor() {
@@ -527,13 +544,12 @@
             const core = document.getElementById('reactor-core');
             const view3 = document.getElementById('view-3');
 
-            let baseSize = isMobile ? 120 : 150;
-            let size = baseSize + (reactorEnergy * (isMobile ? 0.5 : 0.8));
-            core.style.width = size + "px"; core.style.height = size + "px";
-
+            let scaleAmount = 1 + (reactorEnergy / 100) * (isMobile ? 0.3 : 0.6);
             let hue = 190 - (reactorEnergy * 1.9); 
+            
             core.style.background = `radial-gradient(circle at 30% 30%, #ffffff, hsl(${hue}, 100%, 50%), #000000)`;
             core.style.boxShadow = `0 0 ${20 + (reactorEnergy*0.5)}px hsl(${hue}, 100%, 50%)`;
+            core.style.transform = `scale(${scaleAmount})`; 
 
             view3.className = "screen slide-in-right"; 
             if(reactorEnergy > 30 && reactorEnergy <= 60) view3.classList.add("shake-1");
@@ -541,7 +557,7 @@
             else if(reactorEnergy > 90) view3.classList.add("shake-3");
         }
 
-        // --- 7. SCRATCH-OFF DECRYPTION LOGIC ---
+        // --- 7. SCRATCH-OFF DECRYPTION LOGIC (OPTIMIZED) ---
         let scratchCanvas, sCtx;
         let isScratching = false;
         let scratchCheckCounter = 0;
