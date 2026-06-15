@@ -29,7 +29,6 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Forces mobile browsers to use Hardware Acceleration for smoother rendering */
         .screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
@@ -39,23 +38,28 @@
             -webkit-transform: translate3d(0, 0, 0);
         }
 
-        /* --- MAGICAL ETHEREAL INTRO --- */
+        /* --- STABILIZED CSS-ONLY INTRO --- */
         #magical-intro {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; inset: 0;
             background: #020111; z-index: 10000; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; transition: opacity 1.5s ease;
+            align-items: center; justify-content: center; 
+            pointer-events: none; /* Let clicks pass through if it lags */
+            animation: fadeOutIntro 3s forwards;
+            animation-delay: 2s;
         }
         #intro-phrase {
             font-family: 'Cinzel', serif; font-size: 1.8rem; color: #ffb6c1;
             text-shadow: 0 0 20px rgba(255, 182, 193, 0.6); text-align: center;
-            opacity: 0; transition: opacity 1s ease; padding: 20px;
+            padding: 20px;
+            animation: pulseText 2s ease-in-out infinite;
         }
+        @keyframes fadeOutIntro { to { opacity: 0; visibility: hidden; z-index: -1; display: none; } }
+        @keyframes pulseText { 0%, 100% { opacity: 0.7; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1.02); } }
 
-        /* --- CANVASES --- */
+        /* --- CANVASES & AMBIENCE --- */
         #stardust-canvas, #matrix-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; pointer-events: none; }
         #matrix-canvas { z-index: 0; opacity: 0; transition: opacity 2s ease; }
 
-        /* --- AMBIENT NEBULA & STARS --- */
         .nebula { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 15% 85%, rgba(157, 0, 255, 0.4) 0%, transparent 40%), radial-gradient(circle at 85% 15%, rgba(0, 212, 255, 0.4) 0%, transparent 40%); opacity: 0; transition: opacity 2s ease; z-index: 1; pointer-events: none; }
         body.party-mode .nebula { opacity: 1; animation: breathe 8s infinite alternate; }
         @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.1); opacity: 1; } }
@@ -87,41 +91,33 @@
         .time-box span:first-child { font-family: 'Cinzel', serif; font-size: 2rem; color: #00d4ff; font-weight: bold; text-shadow: 0 0 10px #00d4ff; }
         .label { font-size: 0.7rem; color: #b3b3b3; text-transform: uppercase; margin-top: 5px; letter-spacing: 1px;}
 
-        /* Easter Egg */
-        #secret-trigger { position: absolute; top: 0; right: 0; width: 100px; height: 100px; z-index: 100; }
-        #secret-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: rgba(0, 255, 136, 0.1); border: 2px solid #00ff88; padding: 30px; border-radius: 15px; text-align: center; z-index: 2000; backdrop-filter: blur(20px); transition: transform 0.3s; box-shadow: 0 0 50px rgba(0, 255, 136, 0.3); color: #00ff88; width: 85%; max-width: 400px; }
-        #secret-modal h3 { font-family: 'Cinzel', serif; margin-bottom: 15px; font-size: 1.5rem; color: #fff;}
-
-        /* View 2: Ethereal Bloom */
-        .bloom-header { text-align: center; margin-bottom: 40px; z-index: 20; pointer-events: none; }
-        .bloom-header h2 { font-family: 'Cinzel', serif; font-size: 2.2rem; color: #ffb6c1; text-shadow: 0 0 15px rgba(255, 182, 193, 0.5); }
-        .bloom-header p { font-size: 1.1rem; color: #e6e6fa; margin-top: 10px; }
+        /* View 2: The Memory Vault (Photo Gallery) */
+        .gallery-header { text-align: center; margin-bottom: 30px; z-index: 20; pointer-events: none; }
+        .gallery-header h2 { font-family: 'Cinzel', serif; font-size: 2.2rem; color: #ffb6c1; text-shadow: 0 0 15px rgba(255, 182, 193, 0.5); }
+        .gallery-header p { font-size: 1.1rem; color: #e6e6fa; margin-top: 10px; }
         
-        .bloom-wrapper {
-            animation: gentleFloat 4s ease-in-out infinite; z-index: 20;
-        }
-        .ethereal-core {
-            width: 100px; height: 100px; border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #ffffff, #ffb6c1, #da70d6);
-            box-shadow: 0 0 40px rgba(255, 182, 193, 0.8), inset 0 0 20px #fff;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; touch-action: none; 
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-            will-change: transform, box-shadow;
-        }
-        @keyframes gentleFloat { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+        .gallery-grid { display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap; z-index: 20; max-width: 500px;}
         
-        .bloom-status { margin-top: 40px; font-size: 1.2rem; font-weight: bold; color: #ffb6c1; z-index: 20; text-transform: uppercase; letter-spacing: 2px;}
+        .polaroid { 
+            width: 130px; height: 150px; background: white; padding: 5px 5px 25px 5px; 
+            border-radius: 4px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
+            animation: floatPhoto 4s ease-in-out infinite alternate;
+        }
+        .polaroid img { width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
+        
+        /* Different rotations and animation delays for a messy, cute look */
+        .p1 { transform: rotate(-8deg); animation-delay: 0s; }
+        .p2 { transform: rotate(5deg) translateY(-15px); animation-delay: -1.5s; z-index: 2; width: 140px; height: 160px;}
+        .p3 { transform: rotate(-3deg); animation-delay: -0.7s; }
+        
+        @keyframes floatPhoto { 0% { transform: translateY(0) rotate(inherit); } 100% { transform: translateY(-10px) rotate(inherit); } }
 
         /* View 3: Reactor */
         .reactor-container { text-align: center; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; }
         .reactor-container h2 { font-family: 'Cinzel', serif; font-size: 2.2rem; color: #ff3366; margin-bottom: 10px; text-shadow: 0 0 15px rgba(255, 51, 102, 0.5); }
         .reactor-container p { font-size: 1.1rem; color: #ccc; margin-bottom: 40px; max-width: 300px; line-height: 1.5;}
         
-        .reactor-wrapper {
-            display: flex; justify-content: center; align-items: center;
-            width: 200px; height: 200px;
-        }
+        .reactor-wrapper { display: flex; justify-content: center; align-items: center; width: 200px; height: 200px; }
         .reactor-core { 
             width: 150px; height: 150px; border-radius: 50%; 
             background: radial-gradient(circle at 30% 30%, #ffffff, #00d4ff, #000055); 
@@ -181,8 +177,9 @@
             .time-box { width: 65px; padding: 10px 5px; }
             .time-box span:first-child { font-size: 1.5rem; }
             
-            .bloom-header h2 { font-size: 1.8rem; }
-            .ethereal-core { width: 80px; height: 80px; }
+            .gallery-header h2 { font-size: 1.8rem; }
+            .polaroid { width: 95px; height: 115px; }
+            .p2 { width: 105px; height: 125px; }
             
             .reactor-container h2 { font-size: 1.8rem; }
             .reactor-container p { font-size: 0.9rem; }
@@ -202,7 +199,7 @@
 <body>
 
     <div id="magical-intro">
-        <div id="intro-phrase"></div>
+        <div id="intro-phrase">Preparing a universe...</div>
     </div>
 
     <canvas id="stardust-canvas"></canvas>
@@ -215,7 +212,7 @@
         <div id="stars3" class="star-layer"></div>
     </div>
 
-    <audio id="party-music" src="music.mp3" preload="auto" loop></audio>
+    <audio id="party-music" src="https://archive.org/download/happy-birthday-music/Happy%20Birthday.mp3" preload="auto" loop></audio>
 
     <div id="view-1" class="screen">
         <div class="intro-text">
@@ -234,18 +231,24 @@
     </div>
 
     <div id="view-2" class="screen">
-        <div class="bloom-header">
-            <h2>The Stardust Core</h2>
-            <p>Press and hold the crystal to infuse it with magic.</p>
+        <div class="gallery-header">
+            <h2>Moments in Time</h2>
+            <p>A universe built on memories.</p>
         </div>
         
-        <div class="bloom-wrapper" id="bloom-wrap">
-            <div class="ethereal-core" id="magic-core" onpointerdown="startBloom(event)" onpointerup="stopBloom(event)" onpointerleave="stopBloom(event)" onpointercancel="stopBloom(event)">
-                </div>
+        <div class="gallery-grid">
+            <div class="polaroid p1">
+                <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=400&q=80" alt="Memory 1">
+            </div>
+            <div class="polaroid p2">
+                <img src="https://images.unsplash.com/photo-1522228115018-d838bcce5c3a?w=400&q=80" alt="Memory 2">
+            </div>
+            <div class="polaroid p3">
+                <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&q=80" alt="Memory 3">
+            </div>
         </div>
         
-        <div class="bloom-status" id="bloom-status">Infusing: 0%</div>
-        <button class="action-btn disabled" id="btn-to-reactor" style="z-index: 20; opacity: 0; pointer-events: none;" onclick="goToReactor()">Proceed</button>
+        <button class="action-btn" style="z-index: 20; margin-top: 40px;" onclick="goToReactor()">Proceed</button>
     </div>
 
     <div id="view-3" class="screen">
@@ -297,39 +300,13 @@
     </div>
 
     <script>
-        // --- 0. MOBILE DEVICE DETECTION & INTRO ---
+        // --- 0. MOBILE DEVICE DETECTION ---
         const isMobile = window.innerWidth <= 600;
 
-        const introPhrases = [
-            "Gathering stardust...",
-            "Aligning the constellations...",
-            "Preparing a universe...",
-            "Just for Qurat."
-        ];
-        let introIdx = 0;
-        function runMagicalIntro() {
-            const phraseEl = document.getElementById('intro-phrase');
-            if(introIdx < introPhrases.length) {
-                phraseEl.innerText = introPhrases[introIdx];
-                phraseEl.style.opacity = '1';
-                setTimeout(() => {
-                    phraseEl.style.opacity = '0';
-                    introIdx++;
-                    setTimeout(runMagicalIntro, 1200); 
-                }, 2000); 
-            } else {
-                setTimeout(() => {
-                    const introScreen = document.getElementById('magical-intro');
-                    introScreen.style.opacity = '0';
-                    setTimeout(() => { introScreen.style.display = 'none'; }, 1500);
-                }, 500);
-            }
-        }
-        window.onload = runMagicalIntro;
-
         // --- 1. MIDNIGHT VAULT COUNTDOWN TIMER ---
-        // ISHFAQ: I HAVE SET THIS TO EXACTLY MIDNIGHT ON JUNE 16, 2026.
-        const targetDate = new Date("June 16, 2026 00:00:00").getTime();
+        // ISHFAQ: I HAVE SET THIS TO 6:05 PM TODAY FOR TESTING.
+        // CHANGE THIS BACK TO "June 16, 2026 00:00:00" AFTER YOUR TEST!
+        const targetDate = new Date("June 15, 2026 18:05:00").getTime();
         let timerUnlocked = false;
 
         function updateTimer() {
@@ -427,84 +404,7 @@
         }
         let matrixInterval;
 
-        // --- 5. THE ETHEREAL BLOOM MINI-GAME (ANTI-FLICKER) ---
-        let bloomEnergy = 0;
-        let bloomInterval;
-        let isBlooming = false;
-        let isFullyBloomed = false;
-
-        function startBloom(e) {
-            e.preventDefault();
-            if(isFullyBloomed) return;
-            isBlooming = true;
-            document.getElementById('bloom-wrap').style.animation = 'none'; 
-            
-            bloomInterval = setInterval(() => {
-                if(bloomEnergy < 100) {
-                    bloomEnergy += 1.5; 
-                    updateBloomVisuals();
-                }
-                if(bloomEnergy >= 100) {
-                    clearInterval(bloomInterval);
-                    isFullyBloomed = true;
-                    completeBloom();
-                }
-            }, 30);
-        }
-
-        function stopBloom(e) {
-            if(e) e.preventDefault();
-            if(isFullyBloomed) return;
-            isBlooming = false;
-            clearInterval(bloomInterval);
-            
-            bloomInterval = setInterval(() => {
-                if(bloomEnergy > 0 && !isBlooming) {
-                    bloomEnergy -= 3;
-                    updateBloomVisuals();
-                } else {
-                    clearInterval(bloomInterval);
-                    if(bloomEnergy <= 0) {
-                        bloomEnergy = 0;
-                        document.getElementById('bloom-wrap').style.animation = 'gentleFloat 4s ease-in-out infinite';
-                    }
-                }
-            }, 30);
-        }
-
-        function updateBloomVisuals() {
-            if(bloomEnergy < 0) bloomEnergy = 0;
-            const core = document.getElementById('magic-core');
-            const status = document.getElementById('bloom-status');
-            
-            status.innerText = `Infusing: ${Math.floor(bloomEnergy)}%`;
-            
-            let scaleAmount = 1 + (bloomEnergy / 100) * 1.5;
-            let glow = 40 + (bloomEnergy * 1.5);
-            
-            core.style.transform = `scale(${scaleAmount})`;
-            core.style.boxShadow = `0 0 ${glow}px rgba(255, 182, 193, 0.8), inset 0 0 ${20 + (bloomEnergy*0.5)}px #fff`;
-        }
-
-        function completeBloom() {
-            document.getElementById('bloom-status').innerText = "Magic Infused";
-            document.getElementById('bloom-status').style.color = "#00ff88";
-            
-            const core = document.getElementById('magic-core');
-            core.style.background = "#fff";
-            core.style.boxShadow = "0 0 200px #ffb6c1, 0 0 300px #da70d6";
-            
-            confetti({ particleCount: 80, spread: 360, origin: { x: 0.5, y: 0.5 }, colors: ['#ffb6c1', '#da70d6', '#ffffff'] });
-
-            const btn = document.getElementById('btn-to-reactor');
-            btn.classList.remove('disabled');
-            btn.style.opacity = '1';
-            btn.style.pointerEvents = 'auto';
-            
-            setTimeout(() => { core.style.transform = "scale(0)"; core.style.opacity = "0"; }, 500);
-        }
-
-        // --- 6. REACTOR OVERLOAD MINI-GAME (ANTI-FLICKER) ---
+        // --- 5. REACTOR OVERLOAD MINI-GAME (ANTI-FLICKER) ---
         let reactorEnergy = 0; let reactorDecayInterval; let isReactorActive = false;
 
         function startReactor() {
@@ -519,7 +419,7 @@
         function chargeReactor(e) {
             e.preventDefault(); 
             if(!isReactorActive) return;
-            reactorEnergy += 10; 
+            reactorEnergy += 10; // Slightly easier to charge on mobile
             
             if(reactorEnergy >= 100) {
                 reactorEnergy = 100; isReactorActive = false; clearInterval(reactorDecayInterval);
@@ -544,12 +444,13 @@
             const core = document.getElementById('reactor-core');
             const view3 = document.getElementById('view-3');
 
+            // GPU Accelerated Scaling
             let scaleAmount = 1 + (reactorEnergy / 100) * (isMobile ? 0.3 : 0.6);
             let hue = 190 - (reactorEnergy * 1.9); 
             
             core.style.background = `radial-gradient(circle at 30% 30%, #ffffff, hsl(${hue}, 100%, 50%), #000000)`;
             core.style.boxShadow = `0 0 ${20 + (reactorEnergy*0.5)}px hsl(${hue}, 100%, 50%)`;
-            core.style.transform = `scale(${scaleAmount})`; 
+            core.style.transform = `scale(${scaleAmount})`; // Prevents layout recalculation flicker
 
             view3.className = "screen slide-in-right"; 
             if(reactorEnergy > 30 && reactorEnergy <= 60) view3.classList.add("shake-1");
@@ -557,7 +458,7 @@
             else if(reactorEnergy > 90) view3.classList.add("shake-3");
         }
 
-        // --- 7. SCRATCH-OFF DECRYPTION LOGIC (OPTIMIZED) ---
+        // --- 6. SCRATCH-OFF DECRYPTION LOGIC (OPTIMIZED) ---
         let scratchCanvas, sCtx;
         let isScratching = false;
         let scratchCheckCounter = 0;
@@ -604,8 +505,9 @@
             
             let x = clientX - rect.left; let y = clientY - rect.top;
 
-            sCtx.beginPath(); sCtx.arc(x, y, 40, 0, Math.PI * 2); sCtx.fill(); 
+            sCtx.beginPath(); sCtx.arc(x, y, 40, 0, Math.PI * 2); sCtx.fill(); // Bigger brush for mobile
 
+            // Throttled pixel checking to kill lag on mobile
             scratchCheckCounter++;
             if(scratchCheckCounter % 5 === 0) checkScratchPercentage();
         }
@@ -615,7 +517,7 @@
         let isRevealed = false;
         function checkScratchPercentage() {
             if(isRevealed) return;
-            const stride = isMobile ? 150 : 50; 
+            const stride = isMobile ? 150 : 50; // Massively reduced pixel check on mobile
             const pixels = sCtx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height).data;
             let transparentCount = 0; let totalChecked = 0;
 
@@ -624,7 +526,7 @@
                 totalChecked++;
             }
 
-            if (transparentCount / totalChecked > 0.35) { 
+            if (transparentCount / totalChecked > 0.35) { // Needs slightly less scratching to reveal
                 isRevealed = true; scratchCanvas.style.opacity = '0';
                 setTimeout(() => {
                     scratchCanvas.style.display = 'none';
@@ -633,7 +535,7 @@
             }
         }
 
-        // --- 8. NAVIGATION LOGIC ---
+        // --- 7. NAVIGATION LOGIC ---
         function triggerSurprise() {
             const music = document.getElementById('party-music'); 
             music.play().catch(e => console.log("Audio blocked by browser auto-play policy"));
@@ -649,14 +551,14 @@
         }
         function goToFinale() { document.getElementById('view-4').classList.remove('slide-in-right'); document.getElementById('view-4').classList.add('slide-left'); document.getElementById('view-5').classList.add('slide-in-right'); }
 
-        // --- 9. CANDLE TO SCANNER FINALE ---
+        // --- 8. CANDLE TO SCANNER FINALE ---
         function blowOutCandle() {
             const flame = document.querySelector('.flame'); const wishText = document.getElementById('wish-text'); const candle = document.getElementById('candle');
             flame.style.opacity = '0'; flame.style.transform = 'scale(0) translateY(-20px)'; wishText.style.opacity = '0'; candle.style.opacity = '0';
             setTimeout(() => { candle.style.display = 'none'; wishText.style.display = 'none'; const scanner = document.getElementById('scanner'); scanner.style.pointerEvents = 'auto'; scanner.style.opacity = '1'; }, 800);
         }
 
-        // --- 10. BIOMETRIC SCANNER LOGIC ---
+        // --- 9. BIOMETRIC SCANNER LOGIC ---
         const fpBtn = document.getElementById('fp-btn'); const scanText = document.getElementById('scan-text'); let holdTimer; let isScanning = false;
         function startScan(e) {
             e.preventDefault(); if(isScanning) return; isScanning = true; fpBtn.classList.add('scanning'); scanText.innerText = "Scanning identity..."; scanText.style.color = "#00d4ff";
@@ -665,7 +567,7 @@
         function stopScan(e) { e.preventDefault(); if(!isScanning) return; isScanning = false; fpBtn.classList.remove('scanning'); clearTimeout(holdTimer); scanText.innerText = "Scan incomplete. Keep holding."; scanText.style.color = "#ff0040"; }
         fpBtn.addEventListener('mousedown', startScan); fpBtn.addEventListener('touchstart', startScan); fpBtn.addEventListener('mouseup', stopScan); fpBtn.addEventListener('touchend', stopScan); fpBtn.addEventListener('mouseleave', stopScan);
 
-        // --- 11. ULTIMATE MATRIX FINALE ---
+        // --- 10. ULTIMATE MATRIX FINALE ---
         function triggerUltimateFinale() {
             fpBtn.removeEventListener('mousedown', startScan); fpBtn.removeEventListener('touchstart', startScan); scanText.innerText = "ACCESS GRANTED. SISTER CONFIRMED."; scanText.style.color = "#00ff88"; fpBtn.style.borderColor = "#00ff88"; fpBtn.classList.remove('scanning');
             setTimeout(() => {
