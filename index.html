@@ -130,7 +130,7 @@
             box-shadow: 0 0 30px #00d4ff; display: flex; justify-content: center; align-items: center; 
             font-family: 'Cinzel', serif; font-size: 2.5rem; color: white; font-weight: bold; 
             cursor: pointer; touch-action: none; 
-            transition: transform 0.1s ease; /* Simplified for zero flicker */
+            transition: transform 0.1s ease;
         }
         
         .shake-1 { animation: shake 0.4s infinite; } .shake-2 { animation: shake 0.2s infinite; } .shake-3 { animation: shake 0.1s infinite; }
@@ -198,28 +198,20 @@
 </head>
 <body>
 
-    <!-- STABILIZED CSS-ONLY INTRO -->
     <div id="magical-intro">
         <div id="intro-phrase">Preparing a universe...</div>
     </div>
 
-    <!-- BACKGROUND CANVASES -->
     <div class="star-bg"></div>
     <canvas id="stardust-canvas"></canvas>
     <canvas id="matrix-canvas"></canvas>
-
     <div class="nebula"></div>
 
-    <!-- AUDIO FORCED PRELOAD -->
-    <audio id="party-music" preload="auto" loop>
-        <source src="https://archive.org/download/happy-birthday-music/Happy%20Birthday.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="party-music" src="music.mp3" preload="auto" loop></audio>
 
-    <!-- VIEW 1: ENTRANCE & TIMER -->
     <div id="view-1" class="screen">
         <div class="intro-text">
             <h1 id="main-title">Happy 16th June</h1>
-            <!-- Backdoor: Click text to skip timer for testing -->
             <p id="sub-text" onclick="unlockSystem()" title="Tap to bypass timer">System locked. Awaiting celestial alignment.</p>
         </div>
 
@@ -233,7 +225,6 @@
         <button class="action-btn" id="start-btn" style="display: none;" onclick="triggerSurprise()">Reveal Universe</button>
     </div>
 
-    <!-- VIEW 2: THE MEMORY VAULT (BIRTHDAY PHOTOS) -->
     <div id="view-2" class="screen">
         <div class="gallery-header">
             <h2>Happy Birthday</h2>
@@ -241,15 +232,12 @@
         </div>
         
         <div class="gallery-grid">
-            <!-- Glowing Birthday Cake -->
             <div class="polaroid p1">
                 <img src="https://images.unsplash.com/photo-1558636508-e0db3814bd1d?w=400&q=80" alt="Birthday Cake">
             </div>
-            <!-- Celebration Balloons -->
             <div class="polaroid p2">
                 <img src="https://images.unsplash.com/photo-1530103862676-de8892b12a15?w=400&q=80" alt="Balloons">
             </div>
-            <!-- Birthday Gifts -->
             <div class="polaroid p3">
                 <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&q=80" alt="Gifts">
             </div>
@@ -258,7 +246,6 @@
         <button class="action-btn" style="z-index: 20; margin-top: 40px;" onclick="goToReactor()">Proceed</button>
     </div>
 
-    <!-- VIEW 3: REACTOR OVERLOAD -->
     <div id="view-3" class="screen">
         <div class="reactor-container">
             <h2>Hyper-Drive Failure</h2>
@@ -272,7 +259,6 @@
         </div>
     </div>
 
-    <!-- VIEW 4: THE EPIC MESSAGE (WITH SCRATCH-OFF) -->
     <div id="view-4" class="screen">
         <div class="content-scroll-box">
             <div class="message-wrapper" id="msg-wrapper">
@@ -283,14 +269,12 @@
                         No matter where life takes us, how much time passes, or what challenges come our way, one thing is absolute: we will be with each other, no matter what. Through every high and every low, you will always have me in your corner, cheering you on and having your back. Just like the stars drifting behind these words, my support and love for you are infinite. I hope this coming year brings you as much joy, success, and brilliance as you bring to my life. Keep shining, Qurat.
                     </p>
                 </div>
-                <!-- The Scratch-Off Overlay -->
                 <canvas id="scratch-canvas"></canvas>
             </div>
             <button class="action-btn disabled" id="btn-to-finale" style="margin-bottom: 40px; transition: opacity 1s;" onclick="goToFinale()">One Last Thing...</button>
         </div>
     </div>
 
-    <!-- VIEW 5: CANDLE & BIOMETRIC FINALE -->
     <div id="view-5" class="screen">
         <h2 class="finale-text" id="wish-text">Make a wish<br>and tap the flame</h2>
         <div class="candle-container" id="candle">
@@ -315,9 +299,8 @@
         const isMobile = window.innerWidth <= 600;
 
         // --- 1. MIDNIGHT VAULT COUNTDOWN TIMER ---
-        // ISHFAQ: TIMER SET TO 6:15 PM FOR YOUR TESTING
-        // CHANGE TO "June 16, 2026 00:00:00" AFTERWARD!
-        const targetDate = new Date("June 15, 2026 18:15:00").getTime();
+        // ISHFAQ: THE TARGET IS OFFICIALLY SET FOR JUNE 16, MIDNIGHT.
+        const targetDate = new Date("June 16, 2026 00:00:00").getTime();
         let timerUnlocked = false;
 
         function updateTimer() {
@@ -394,7 +377,7 @@
         }
         let matrixInterval;
 
-        // --- 4. REACTOR OVERLOAD MINI-GAME (ANTI-FLICKER SCALING) ---
+        // --- 4. REACTOR OVERLOAD MINI-GAME ---
         let reactorEnergy = 0; let reactorDecayInterval; let isReactorActive = false;
 
         function startReactor() {
@@ -433,7 +416,6 @@
             const core = document.getElementById('reactor-core');
             const view3 = document.getElementById('view-3');
 
-            // Pure scaling - no laggy width/height recalculations
             let scaleAmount = 1 + (reactorEnergy / 100) * (isMobile ? 0.3 : 0.6);
             let hue = 190 - (reactorEnergy * 1.9); 
             
@@ -524,9 +506,7 @@
 
         // --- 6. NAVIGATION LOGIC & AUDIO UNLOCK ---
         function triggerSurprise() {
-            // FORCES AUDIO TO UNLOCK AND PLAY
             const music = document.getElementById('party-music'); 
-            music.load(); // Force preload
             music.play().then(() => {
                 console.log("Audio playing successfully.");
             }).catch(e => {
