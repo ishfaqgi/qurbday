@@ -12,12 +12,20 @@
         /* =========================================
            CORE SYSTEM ARCHITECTURE
            ========================================= */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            /* KILLS THE BLUE MOBILE TAP HIGHLIGHT */
+            -webkit-tap-highlight-color: transparent; 
+            outline: none; 
+            /* PREVENTS ACCIDENTAL TEXT HIGHLIGHTING WHEN MASHING BUTTONS */
+            user-select: none; 
+            -webkit-user-select: none; 
+        }
 
         body {
             font-family: 'Montserrat', sans-serif;
             background: #020111; color: white;
-            height: 100vh; width: 100vw; overflow: hidden; 
+            height: 100dvh; width: 100vw; overflow: hidden; 
             position: relative; transition: background 2s ease;
             touch-action: manipulation;
         }
@@ -39,11 +47,11 @@
         #matrix-canvas { z-index: 0; opacity: 0; transition: opacity 2s ease; }
 
         /* --- AMBIENT NEBULA & STARS --- */
-        .nebula { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 15% 85%, rgba(157, 0, 255, 0.4) 0%, transparent 40%), radial-gradient(circle at 85% 15%, rgba(0, 212, 255, 0.4) 0%, transparent 40%); opacity: 0; transition: opacity 2s ease; z-index: 1; }
+        .nebula { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 15% 85%, rgba(157, 0, 255, 0.4) 0%, transparent 40%), radial-gradient(circle at 85% 15%, rgba(0, 212, 255, 0.4) 0%, transparent 40%); opacity: 0; transition: opacity 2s ease; z-index: 1; pointer-events: none; }
         body.party-mode .nebula { opacity: 1; animation: breathe 8s infinite alternate; }
         @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.1); opacity: 1; } }
 
-        #stars-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; perspective: 800px; transition: opacity 1s; }
+        #stars-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; perspective: 800px; transition: opacity 1s; pointer-events: none; }
         .star-layer { position: absolute; top: 50%; left: 50%; width: 2px; height: 2px; background: transparent; transform-style: preserve-3d; }
 
         /* --- SCREEN MANAGEMENT --- */
@@ -67,11 +75,6 @@
         /* View 1: Entrance */
         .intro-text h1 { font-family: 'Cinzel', serif; font-size: 3.5rem; margin-bottom: 10px; text-align: center; text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); transition: color 0.5s; }
         .intro-text p { font-size: 1.1rem; text-align: center; color: #00d4ff; margin-bottom: 40px; letter-spacing: 2px; text-transform: uppercase; transition: color 0.5s;}
-        
-        /* Easter Egg */
-        #secret-trigger { position: absolute; top: 0; right: 0; width: 100px; height: 100px; z-index: 100; }
-        #secret-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: rgba(0, 255, 136, 0.1); border: 2px solid #00ff88; padding: 30px; border-radius: 15px; text-align: center; z-index: 2000; backdrop-filter: blur(20px); transition: transform 0.3s; box-shadow: 0 0 50px rgba(0, 255, 136, 0.3); color: #00ff88; width: 85%; max-width: 400px; }
-        #secret-modal h3 { font-family: 'Cinzel', serif; margin-bottom: 15px; font-size: 1.5rem; color: #fff;}
 
         /* View 2: Butterfly Catch */
         .puzzle-header { text-align: center; margin-bottom: 20px; z-index: 20; pointer-events: none; }
@@ -89,13 +92,13 @@
         .reactor-container { text-align: center; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; }
         .reactor-container h2 { font-family: 'Cinzel', serif; font-size: 2.2rem; color: #ff3366; margin-bottom: 10px; text-shadow: 0 0 15px rgba(255, 51, 102, 0.5); }
         .reactor-container p { font-size: 1.1rem; color: #ccc; margin-bottom: 40px; max-width: 300px; line-height: 1.5;}
-        .reactor-core { width: 150px; height: 150px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #ffffff, #00d4ff, #000055); box-shadow: 0 0 30px #00d4ff; display: flex; justify-content: center; align-items: center; font-family: 'Cinzel', serif; font-size: 2.5rem; color: white; font-weight: bold; cursor: pointer; user-select: none; touch-action: none; transition: transform 0.05s, width 0.1s, height 0.1s; }
+        .reactor-core { width: 150px; height: 150px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #ffffff, #00d4ff, #000055); box-shadow: 0 0 30px #00d4ff; display: flex; justify-content: center; align-items: center; font-family: 'Cinzel', serif; font-size: 2.5rem; color: white; font-weight: bold; cursor: pointer; touch-action: none; transition: transform 0.05s, width 0.1s, height 0.1s; }
         .reactor-core:active { transform: scale(0.9); }
         .shake-1 { animation: shake 0.4s infinite; } .shake-2 { animation: shake 0.2s infinite; } .shake-3 { animation: shake 0.1s infinite; }
         @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 25% { transform: translate(-2px, -2px) rotate(-1deg); } 50% { transform: translate(-3px, 0px) rotate(1deg); } 75% { transform: translate(3px, 2px) rotate(0deg); } 100% { transform: translate(1px, -1px) rotate(-1deg); } }
 
         /* View 4: Scratch-Off Message */
-        .content-scroll-box { width: 100%; max-width: 700px; max-height: 80vh; overflow-y: auto; padding-right: 10px; display: flex; flex-direction: column; align-items: center; }
+        .content-scroll-box { width: 100%; max-width: 700px; max-height: 80dvh; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; align-items: center; }
         .content-scroll-box::-webkit-scrollbar { width: 4px; }
         .content-scroll-box::-webkit-scrollbar-thumb { background: rgba(0, 212, 255, 0.3); border-radius: 10px; }
         
@@ -122,7 +125,7 @@
 
         .scanner-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; opacity: 0; pointer-events: none; transition: opacity 1s; z-index: 50; width: 100%;}
         .scanner-container h3 { font-family: 'Cinzel', serif; color: #00d4ff; font-size: 1.5rem; margin-bottom: 30px; letter-spacing: 2px;}
-        .fingerprint-btn { position: relative; width: 120px; height: 120px; margin: 0 auto; border: 3px solid rgba(0, 212, 255, 0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 3rem; background: rgba(0, 212, 255, 0.05); cursor: pointer; overflow: hidden; touch-action: none; box-shadow: 0 0 30px rgba(0, 212, 255, 0.1); transition: all 0.3s; }
+        .fingerprint-btn { position: relative; width: 120px; height: 120px; margin: 0 auto; border: 3px solid rgba(0, 212, 255, 0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 3rem; background: rgba(0, 212, 255, 0.05); cursor: pointer; touch-action: none; overflow: hidden; box-shadow: 0 0 30px rgba(0, 212, 255, 0.1); transition: all 0.3s; }
         .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: #00d4ff; box-shadow: 0 0 15px #00d4ff, 0 0 30px #00d4ff; opacity: 0; transform: translateY(-10px); }
         .fingerprint-btn.scanning { border-color: #00d4ff; box-shadow: 0 0 50px rgba(0, 212, 255, 0.5); background: rgba(0, 212, 255, 0.2); }
         .fingerprint-btn.scanning .scanner-line { opacity: 1; animation: scanLaser 2s linear infinite; }
@@ -131,10 +134,30 @@
 
         .final-wish { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'Cinzel', serif; font-size: 3.5rem; text-align: center; color: #fff; text-shadow: 0 0 20px #00d4ff, 0 0 40px #9d00ff, 0 0 60px #ff00ff; opacity: 0; transition: opacity 2s ease; pointer-events: none; width: 100%; z-index: 100; }
 
+        /* =========================================
+           MOBILE OPTIMIZATIONS
+           ========================================= */
         @media (max-width: 600px) {
-            .intro-text h1 { font-size: 2.8rem; }
-            .epic-message-box { padding: 30px 20px; }
-            .final-wish { font-size: 2.5rem; }
+            .intro-text h1 { font-size: 2.2rem; }
+            .intro-text p { font-size: 0.9rem; }
+            .action-btn { padding: 12px 30px; font-size: 0.9rem; }
+            
+            .puzzle-header h2 { font-size: 1.6rem; }
+            .butterfly { width: 45px; height: 45px; }
+            
+            .reactor-container h2 { font-size: 1.8rem; }
+            .reactor-container p { font-size: 0.9rem; }
+            /* Scaling reactor down so it fits nicely and doesn't push buttons off screen */
+            .reactor-core { width: 120px; height: 120px; font-size: 2rem; }
+
+            .epic-message-box { padding: 25px 15px; }
+            .epic-message-box h2 { font-size: 1.6rem; margin-bottom: 15px;}
+            .epic-message-box p { font-size: 0.9rem; line-height: 1.6; }
+            
+            .finale-text { font-size: 1.5rem; }
+            .scanner-container h3 { font-size: 1.2rem; }
+            .fingerprint-btn { width: 100px; height: 100px; font-size: 2.5rem; }
+            .final-wish { font-size: 2rem; }
         }
     </style>
 </head>
@@ -145,14 +168,9 @@
         <div id="intro-phrase"></div>
     </div>
 
+    <!-- BACKGROUND CANVASES -->
     <canvas id="stardust-canvas"></canvas>
     <canvas id="matrix-canvas"></canvas>
-    
-    <div id="secret-trigger" onclick="checkSecret()"></div>
-    <div id="secret-modal" onclick="closeSecret()">
-        <h3>SYSTEM OVERRIDE</h3>
-        <p>JARVIS PROTOCOL INITIATED.<br><br>Administrator Ishfaq explicitly hard-coded me to inform you that you are his favorite entity in the known universe.<br><br><i>[Tap to close]</i></p>
-    </div>
 
     <div class="nebula"></div>
     <div id="stars-container">
@@ -202,9 +220,7 @@
     <!-- VIEW 4: THE EPIC MESSAGE (WITH SCRATCH-OFF) -->
     <div id="view-4" class="screen">
         <div class="content-scroll-box">
-            
             <div class="message-wrapper" id="msg-wrapper">
-                <!-- The message box -->
                 <div class="epic-message-box">
                     <h2>To My Sister, Qurat</h2>
                     <p>
@@ -241,7 +257,10 @@
     </div>
 
     <script>
-        // --- 0. MAGICAL ETHEREAL INTRO ---
+        // --- 0. MOBILE DEVICE DETECTION FOR PERFORMANCE ---
+        const isMobile = window.innerWidth <= 600;
+
+        // --- 1. MAGICAL ETHEREAL INTRO ---
         const introPhrases = [
             "Gathering stardust...",
             "Aligning the constellations...",
@@ -255,7 +274,6 @@
             if(introIdx < introPhrases.length) {
                 phraseEl.innerText = introPhrases[introIdx];
                 phraseEl.style.opacity = '1';
-                
                 setTimeout(() => {
                     phraseEl.style.opacity = '0';
                     introIdx++;
@@ -271,19 +289,22 @@
         }
         window.onload = runMagicalIntro;
 
-        // --- 1. STARDUST CANVAS ---
+        // --- 2. STARDUST CANVAS (OPTIMIZED FOR MOBILE) ---
         const sdCanvas = document.getElementById('stardust-canvas'); const sdCtx = sdCanvas.getContext('2d');
         sdCanvas.width = window.innerWidth; sdCanvas.height = window.innerHeight;
         let particlesArray = []; const mouse = { x: null, y: null };
+        const MAX_PARTICLES = isMobile ? 30 : 80; // Limit particles to save battery/reduce lag
+
         window.addEventListener('resize', () => { sdCanvas.width = window.innerWidth; sdCanvas.height = window.innerHeight; });
         window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; addStardust(); });
-        window.addEventListener('touchmove', (e) => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; addStardust(); });
+        window.addEventListener('touchmove', (e) => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; addStardust(); }, {passive: true});
+        
         class Stardust {
             constructor() { this.x = mouse.x; this.y = mouse.y; this.size = Math.random() * 3 + 1; this.speedX = Math.random() * 2 - 1; this.speedY = Math.random() * 2 - 1; this.color = `hsla(${Math.random() * 60 + 200}, 100%, 70%, 0.8)`; }
             update() { this.x += this.speedX; this.y += this.speedY; if (this.size > 0.1) this.size -= 0.05; }
             draw() { sdCtx.fillStyle = this.color; sdCtx.beginPath(); sdCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); sdCtx.fill(); }
         }
-        function addStardust() { if (particlesArray.length < 100) { particlesArray.push(new Stardust()); particlesArray.push(new Stardust()); } }
+        function addStardust() { if (particlesArray.length < MAX_PARTICLES) { particlesArray.push(new Stardust()); } }
         function animateStardust() {
             sdCtx.clearRect(0, 0, sdCanvas.width, sdCanvas.height);
             for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); particlesArray[i].draw(); if (particlesArray[i].size <= 0.2) { particlesArray.splice(i, 1); i--; } }
@@ -291,19 +312,18 @@
         }
         animateStardust();
 
-        // --- 2. EASTER EGG ---
-        let secretClicks = 0; let secretTimer;
-        function checkSecret() { secretClicks++; clearTimeout(secretTimer); if (secretClicks >= 3) { document.getElementById('secret-modal').style.transform = 'translate(-50%, -50%) scale(1)'; secretClicks = 0; } secretTimer = setTimeout(() => { secretClicks = 0; }, 1000); }
-        function closeSecret() { document.getElementById('secret-modal').style.transform = 'translate(-50%, -50%) scale(0)'; }
-
-        // --- 3. BACKGROUND STARS & WARP SPEED ---
+        // --- 3. BACKGROUND STARS & WARP SPEED (OPTIMIZED) ---
         function createStars(layerId, count, size, speed) {
             const layer = document.getElementById(layerId); let shadows = '';
             for (let i = 0; i < count; i++) { const x = Math.floor(Math.random() * 2000 - 1000); const y = Math.floor(Math.random() * 2000 - 1000); shadows += `${x}px ${y}px #FFF${i === count - 1 ? '' : ','}`; }
             layer.style.boxShadow = shadows; layer.style.width = size + 'px'; layer.style.height = size + 'px';
             layer.animate([{ transform: 'translateZ(-500px) rotateZ(0deg)' }, { transform: `translateZ(-500px) rotateZ(360deg)` }], { duration: speed, iterations: Infinity, easing: 'linear' });
         }
-        createStars('stars1', 300, 1, 150000); createStars('stars2', 150, 2, 120000); createStars('stars3', 40, 3, 90000);   
+        
+        // Massive reduction in background shadows for mobile to kill the lag
+        createStars('stars1', isMobile ? 80 : 250, 1, 150000); 
+        createStars('stars2', isMobile ? 40 : 100, 2, 120000); 
+        createStars('stars3', isMobile ? 15 : 30, 3, 90000);   
 
         function triggerWarpSpeed() {
             const stars = document.getElementById('stars-container');
@@ -316,7 +336,7 @@
         // --- 4. THE MATRIX FINALE RAIN EFFECT ---
         const mCanvas = document.getElementById('matrix-canvas'); const mCtx = mCanvas.getContext('2d');
         mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
-        const matrixChars = "QURAT SISTER HAPPY BIRTHDAY ISHFAQ LOVE".split(""); const fontSize = 16; const columns = mCanvas.width / fontSize; const drops = [];
+        const matrixChars = "QURAT SISTER HAPPY BIRTHDAY ISHFAQ LOVE".split(""); const fontSize = isMobile ? 12 : 16; const columns = mCanvas.width / fontSize; const drops = [];
         for(let x = 0; x < columns; x++) drops[x] = 1;
         function drawMatrix() {
             mCtx.fillStyle = "rgba(2, 1, 17, 0.05)"; mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
@@ -357,8 +377,8 @@
         }
 
         function setRandomPosition(el) {
-            const x = Math.floor(Math.random() * 80) + 10; 
-            const y = Math.floor(Math.random() * 70) + 15; 
+            const x = Math.floor(Math.random() * 70) + 15; // Kept further from edges
+            const y = Math.floor(Math.random() * 60) + 15; 
             el.style.left = `${x}vw`;
             el.style.top = `${y}vh`;
             const isFacingRight = Math.random() > 0.5;
@@ -398,15 +418,15 @@
         function chargeReactor(e) {
             e.preventDefault(); 
             if(!isReactorActive) return;
-            reactorEnergy += 8; 
+            reactorEnergy += 10; // Slightly easier to charge on mobile
             
             if(reactorEnergy >= 100) {
                 reactorEnergy = 100; isReactorActive = false; clearInterval(reactorDecayInterval);
                 document.getElementById('reactor-text').innerText = "MAX";
                 document.getElementById('reactor-core').style.background = "#fff";
-                document.getElementById('reactor-core').style.boxShadow = "0 0 100px #fff, 0 0 300px #ff3366";
+                document.getElementById('reactor-core').style.boxShadow = "0 0 100px #fff, 0 0 200px #ff3366";
                 
-                confetti({ startVelocity: 100, spread: 360, ticks: 200, zIndex: 1000, particleCount: 200, origin: { x: 0.5, y: 0.5 }, colors: ['#ffffff', '#00d4ff', '#ff3366'] });
+                confetti({ startVelocity: isMobile ? 60 : 100, spread: 360, ticks: 200, zIndex: 1000, particleCount: isMobile ? 100 : 200, origin: { x: 0.5, y: 0.5 }, colors: ['#ffffff', '#00d4ff', '#ff3366'] });
 
                 document.body.style.background = "#fff";
                 triggerWarpSpeed();
@@ -423,12 +443,14 @@
             const core = document.getElementById('reactor-core');
             const view3 = document.getElementById('view-3');
 
-            let size = 150 + (reactorEnergy * 0.8);
+            // Responsive growth logic
+            let baseSize = isMobile ? 120 : 150;
+            let size = baseSize + (reactorEnergy * (isMobile ? 0.5 : 0.8));
             core.style.width = size + "px"; core.style.height = size + "px";
 
             let hue = 190 - (reactorEnergy * 1.9); 
             core.style.background = `radial-gradient(circle at 30% 30%, #ffffff, hsl(${hue}, 100%, 50%), #000000)`;
-            core.style.boxShadow = `0 0 ${30 + reactorEnergy}px hsl(${hue}, 100%, 50%)`;
+            core.style.boxShadow = `0 0 ${20 + (reactorEnergy*0.5)}px hsl(${hue}, 100%, 50%)`;
 
             view3.className = "screen slide-in-right"; 
             if(reactorEnergy > 30 && reactorEnergy <= 60) view3.classList.add("shake-1");
@@ -436,9 +458,10 @@
             else if(reactorEnergy > 90) view3.classList.add("shake-3");
         }
 
-        // --- 7. SCRATCH-OFF DECRYPTION LOGIC ---
+        // --- 7. SCRATCH-OFF DECRYPTION LOGIC (OPTIMIZED) ---
         let scratchCanvas, sCtx;
         let isScratching = false;
+        let scratchCheckCounter = 0;
 
         function initScratchCard() {
             scratchCanvas = document.getElementById('scratch-canvas');
@@ -482,8 +505,11 @@
             
             let x = clientX - rect.left; let y = clientY - rect.top;
 
-            sCtx.beginPath(); sCtx.arc(x, y, 35, 0, Math.PI * 2); sCtx.fill();
-            checkScratchPercentage();
+            sCtx.beginPath(); sCtx.arc(x, y, 40, 0, Math.PI * 2); sCtx.fill(); // Bigger brush for mobile
+
+            // Throttled pixel checking to kill lag on mobile
+            scratchCheckCounter++;
+            if(scratchCheckCounter % 5 === 0) checkScratchPercentage();
         }
 
         function endScratch() { isScratching = false; }
@@ -491,7 +517,7 @@
         let isRevealed = false;
         function checkScratchPercentage() {
             if(isRevealed) return;
-            const stride = 50; 
+            const stride = isMobile ? 150 : 50; // Massively reduced pixel check on mobile
             const pixels = sCtx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height).data;
             let transparentCount = 0; let totalChecked = 0;
 
@@ -500,20 +526,18 @@
                 totalChecked++;
             }
 
-            if (transparentCount / totalChecked > 0.40) {
+            if (transparentCount / totalChecked > 0.35) { // Needs slightly less scratching to reveal
                 isRevealed = true; scratchCanvas.style.opacity = '0';
                 setTimeout(() => {
                     scratchCanvas.style.display = 'none';
                     document.getElementById('btn-to-finale').classList.remove('disabled');
-                }, 1500);
+                }, 1000);
             }
         }
 
         // --- 8. NAVIGATION ---
         function triggerSurprise() {
             const music = document.getElementById('party-music'); 
-            
-            // Audio starts playing automatically now
             music.play().catch(e => console.log("Audio blocked by browser auto-play policy"));
             
             document.getElementById('view-1').classList.add('slide-out'); 
@@ -557,7 +581,7 @@
         // --- EFFECTS ---
         function fireInsaneConfetti() {
             var duration = 15 * 1000; var animationEnd = Date.now() + duration;
-            var interval = setInterval(function() { var timeLeft = animationEnd - Date.now(); if (timeLeft <= 0) return clearInterval(interval); confetti({ startVelocity: 80, spread: 360, ticks: 150, zIndex: 1000, particleCount: 150 * (timeLeft / duration), origin: { x: Math.random(), y: Math.random() - 0.2 }, colors: ['#00d4ff', '#9d00ff', '#ff00ff', '#ffffff'] }); }, 200);
+            var interval = setInterval(function() { var timeLeft = animationEnd - Date.now(); if (timeLeft <= 0) return clearInterval(interval); confetti({ startVelocity: 80, spread: 360, ticks: 150, zIndex: 1000, particleCount: isMobile ? 80 : 150, origin: { x: Math.random(), y: Math.random() - 0.2 }, colors: ['#00d4ff', '#9d00ff', '#ff00ff', '#ffffff'] }); }, 200);
         }
     </script>
 </body>
